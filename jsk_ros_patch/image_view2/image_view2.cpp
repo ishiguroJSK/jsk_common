@@ -1506,30 +1506,31 @@ namespace image_view2{
 
   void ImageView2::processMove(int x, int y)
   {
-    if (left_button_clicked_) {
-      cv::Point2f Pt_1(window_selection_.x, window_selection_.y);
-      cv::Point2f Pt(x, y);
-      if (isValidMovement(Pt_1, Pt)) {
-        if (getMode() == MODE_RECTANGLE) {
-          window_selection_.width  = x - window_selection_.x;
-          window_selection_.height = y - window_selection_.y;
-        }
-        else if (getMode() == MODE_SERIES) {
-          addPoint(x, y);
-        }
-        else if (getMode() == MODE_SELECT_FORE_AND_BACK) {
-          addRegionPoint(x, y);
-        }
-        else if (getMode() == MODE_SELECT_FORE_AND_BACK_RECT) {
-          updateRegionWindowSize(x, y);
-        }
-      }
+    if (true) {
+    // if (left_button_clicked_) {
+      // cv::Point2f Pt_1(window_selection_.x, window_selection_.y);
+      // cv::Point2f Pt(x, y);
+      // if (isValidMovement(Pt_1, Pt)) {
+      //   if (getMode() == MODE_RECTANGLE) {
+      //     window_selection_.width  = x - window_selection_.x;
+      //     window_selection_.height = y - window_selection_.y;
+      //   }
+      //   else if (getMode() == MODE_SERIES) {
+      //     addPoint(x, y);
+      //   }
+      //   else if (getMode() == MODE_SELECT_FORE_AND_BACK) {
+      //     addRegionPoint(x, y);
+      //   }
+      //   else if (getMode() == MODE_SELECT_FORE_AND_BACK_RECT) {
+      //     updateRegionWindowSize(x, y);
+      //   }
+      // }
       // publish the points
       geometry_msgs::PointStamped move_point;
       move_point.header.stamp = ros::Time::now();
       move_point.point.x = x;
       move_point.point.y = y;
-      move_point.point.z = 0;
+      move_point.point.z = (left_button_clicked_ ? 1 : 0);
       move_point_pub_.publish(move_point);
     }
     else {
@@ -1666,6 +1667,7 @@ namespace image_view2{
       break;
     }
     }
+    processMove(x, y);
     {
       boost::mutex::scoped_lock lock2(image_mutex_);
       drawImage();
